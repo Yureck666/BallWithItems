@@ -14,6 +14,7 @@ namespace Presenters
         private void Awake()
         {
             _model = new InventoryModel();
+            _model.OnModelChange.AddListener(arg0 => RefreshCounterText());
         }
 
         public int GetItemsCountByType(ItemType type)
@@ -24,13 +25,11 @@ namespace Presenters
         public void AddItem(ItemType item, int count)
         {
             _model.AddItem(item, count);
-            RefreshCounterText();
         }
 
         public void RemoveItem(ItemType item, int count)
         {
             _model.RemoveItem(item, count);
-            RefreshCounterText();
         }
 
         private void RefreshCounterText()

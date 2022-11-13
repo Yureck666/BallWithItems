@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Models
 {
@@ -12,10 +13,13 @@ namespace Models
         private Dictionary<ItemType, int> _items;
         
         public Dictionary<ItemType, int> Items => _items;
+        
+        public UnityEvent<InventoryModel> OnModelChange { get; private set; }
 
         public InventoryModel()
         {
             _items = new Dictionary<ItemType, int>();
+            OnModelChange = new UnityEvent<InventoryModel>();
         }
 
         public void AddItem(ItemType item, int count)
@@ -24,6 +28,8 @@ namespace Models
                 _items[item] += count;
             else
                 _items.Add(item, count);
+            
+            OnModelChange.Invoke(this);
         }
 
         public void RemoveItem(ItemType item, int count)
@@ -35,6 +41,8 @@ namespace Models
                 {
                     _items.Remove(item);
                 }
+                
+                OnModelChange.Invoke(this);
             }
         }
 

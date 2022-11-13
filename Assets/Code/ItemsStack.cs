@@ -36,7 +36,7 @@ public class ItemsStack : MonoBehaviour
         [CanBeNull]
         public Item GetItem()
         {
-            return _items.First();
+            return _items.FirstOrDefault();
         }
 
         public void AddItem(Item item)
