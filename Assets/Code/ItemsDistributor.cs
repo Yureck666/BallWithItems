@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
@@ -14,35 +15,33 @@ namespace Code
         [Inject] private ItemsStack _itemsStack;
         [Inject] private PlayerMove _playerMove;
 
-        private bool _playerIsInTrigger;
-        private float _nextGet;
+        private Coroutine _coroutine;
 
-
-        private void FixedUpdate()
+        private IEnumerator GetItem()
         {
-            if (Time.time >= _nextGet && _playerIsInTrigger)
+            while (true)
             {
                 var item = _itemsStack.GetItem(itemType);
                 _itemsStack.RemoveItemFromStack(item);
                 item.Collect(spawnPosition.position, _playerMove.transform);
 
-                _nextGet = Time.time + interval;
+                yield return new WaitForSeconds(interval);
             }
         }
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.TryGetComponent(out PlayerMove player))
+            if (other.TryGetComponent(out PlayerMove _))
             {
-                _playerIsInTrigger = true;
+                _coroutine = StartCoroutine(GetItem());
             }
         }
         
         private void OnTriggerExit(Collider other)
         {
-            if (other.TryGetComponent(out PlayerMove player))
+            if (other.TryGetComponent(out PlayerMove _))
             {
-                _playerIsInTrigger = false;
+                StopCoroutine(_coroutine);
             }
         }
     }

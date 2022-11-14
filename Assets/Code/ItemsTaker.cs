@@ -14,36 +14,34 @@ public class ItemsTaker : MonoBehaviour
     [Inject] private PlayerMove _playerMove;
     [Inject] private InventoryPresenter _inventoryPresenter;
 
-    private bool _playerIsInTrigger;
-    private float _nextGet;
-
-
-    private void FixedUpdate()
+    private Coroutine _coroutine;
+    
+    private IEnumerator TakeItem()
     {
-        if (Time.time >= _nextGet && _playerIsInTrigger && _inventoryPresenter.GetItemsCountByType(itemType) > 0)
+        while (true)
         {
             var item = _itemsStack.GetItem(itemType);
             _itemsStack.RemoveItemFromStack(item);
             item.TakeOut(_playerMove.transform.position, takePosition);
             _inventoryPresenter.RemoveItem(itemType, 1);
 
-            _nextGet = Time.time + interval;
+            yield return new WaitForSeconds(interval);
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent(out PlayerMove player))
+        if (other.TryGetComponent(out PlayerMove _))
         {
-            _playerIsInTrigger = true;
+            _coroutine = StartCoroutine(TakeItem());
         }
     }
         
     private void OnTriggerExit(Collider other)
     {
-        if (other.TryGetComponent(out PlayerMove player))
+        if (other.TryGetComponent(out PlayerMove _))
         {
-            _playerIsInTrigger = false;
+            StopCoroutine(_coroutine);
         }
     }
 }
