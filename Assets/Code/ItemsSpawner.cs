@@ -1,4 +1,5 @@
-﻿using Presenters;
+﻿using Models;
+using Presenters;
 using UnityEngine;
 using Zenject;
 
@@ -7,7 +8,7 @@ public class ItemsSpawner : MonoBehaviour
     [Inject] private ItemsProvider _itemsProvider;
     [Inject] private DiContainer _container;
     [Inject] private ItemsStack _itemsStack;
-    [Inject] private InventoryPresenter _inventoryPresenter;
+    [Inject] private InventoryModel _inventoryModel;
 
     public Item SpawnItem(ItemType itemType)
     {
@@ -15,7 +16,7 @@ public class ItemsSpawner : MonoBehaviour
         item.Init(() =>
         {
             _itemsStack.BackItemToStack(item);
-            _inventoryPresenter.AddItem(item.ItemType, 1);
+            _inventoryModel.AddItem(item.ItemType, 1);
         });
         return item;
     }

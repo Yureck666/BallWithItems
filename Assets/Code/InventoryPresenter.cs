@@ -2,6 +2,7 @@
 using Models;
 using UnityEngine;
 using Views;
+using Zenject;
 
 namespace Presenters
 {
@@ -9,11 +10,10 @@ namespace Presenters
     {
         [SerializeField] private InventoryView view;
 
-        private InventoryModel _model;
+        [Inject] private InventoryModel _model;
 
         private void Awake()
         {
-            _model = new InventoryModel();
             _model.OnModelChange.AddListener(arg0 => RefreshCounterText());
         }
 
